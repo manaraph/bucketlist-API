@@ -1,4 +1,4 @@
-# API-with-nodejs
+# Bucketlist-API
 > An API with Node and Express 
 
 ## Cloning Repository
