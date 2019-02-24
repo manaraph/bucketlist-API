@@ -5,11 +5,11 @@ app.get('/', (req, res) =>{
     res.send("Hello world!!!");
 });
 
-app.get('/api/bucketlist', (req, res) =>{
-    res.send([1,,5,6,7])
+app.get('/bucketlist', (req, res) =>{
+    res.send([1,5,6,7])
 });
 
-app.get('api/bucketlist/:id', (req, res) =>{
+app.get('/bucketlist/:id', (req, res) =>{
     res.send(req.params.id)
 });
 
