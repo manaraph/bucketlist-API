@@ -10,7 +10,6 @@ const bucketlist =[
     {id:3, name: "Improve my technical and managerial skills"},
 ]
 
-//Get Requests
 app.get('/', (req, res) =>{
     res.send("Hello world!!!");
 });
@@ -21,19 +20,18 @@ app.get('/api/bucketlist', (req, res) =>{
 
 app.post('/api/bucketlist', (req, res) =>{
     
-    //Manual Validation
+    //Custom Validation
     // if(!req.body.name || req.body.name.length < 3){
     //     // 400 Bad Request
     //     res.status(400).send('Name is requires and should be minimum of 3 characters');
     //     return;
     // }
 
+    //Validation with joi
     const schema = {
         name: Joi.string().min(3).required()
     }
     const result = Joi.validate(req.body, schema);
-    console.log(result);
-    
     
     if(result.error){
         // 400 Bad Request
@@ -63,11 +61,30 @@ app.get('/api/bucketlist/:id', (req, res) =>{
     res.send(list);
 });
 
-app.post('/api/bucketlist/:id', (req, res) =>{
+
+app.put('/api/bucketlist/:id', (req, res) =>{
+    //Look up the bucketlist
     const list = bucketlist.find(b => b.id === parseInt(req.params.id));
-    if(!list) res.status(404).send('The list with the given ID was not found.');
-    res.send(list);
+    if(!list) res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
+
+    //Validate
+    const schema = {
+        name: Joi.string().min(3).required()
+    }
+    const result = Joi.validate(req.body, schema);
+
+    //If invalid, return 400 - Bad Request
+    if(result.error){
+        // 400 Bad Request
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+
+    //Update bucketlist
+    bucketlist.name = req.body.name;
+    res.send(bucketlist);   //Return the updated bucketlist 
 });
+
 
 app.get('/api/bucketlist/:year/:month', (req, res) =>{
     res.send(req.params) //example of url => http://localhost:3000/api/bucketlist/2018/2
