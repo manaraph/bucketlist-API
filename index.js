@@ -1,3 +1,4 @@
+const Joi = require('joi')
 const express = require('express');
 const app = express();
 
@@ -20,11 +21,28 @@ app.get('/api/bucketlist', (req, res) =>{
 });
 
 app.post('/api/bucketlist', (req, res) =>{
-    if(!req.body.name || req.body.name.length < 3){
+    
+    //Manual Validation
+    // if(!req.body.name || req.body.name.length < 3){
+    //     // 400 Bad Request
+    //     res.status(400).send('Name is requires and should be minimum of 3 characters');
+    //     return;
+    // }
+
+    const schema = {
+        name: Joi.string().min(3).required()
+    }
+    const result = Joi.validate(req.body, schema);
+    console.log(result);
+    
+    
+    if(result.error){
         // 400 Bad Request
-        res.status(400).send('Name is requires and should be minimum of 3 characters');
+        // res.status(400).send(result.error);
+        res.status(400).send(result.error.details[0].message);
         return;
     }
+    
 
     const list = {
         id: bucketlist.length + 1,
