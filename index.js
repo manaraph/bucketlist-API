@@ -133,6 +133,10 @@ app.delete('/api/bucketlist/:id', (req, res) => {
     res.send(list);   //Return the deleted bucketlist 
 });
 
+
+/**********************************************
+          bucketlist version 2
+***********************************************/
 app.get('/api/v2/bucketlist', (req, res) =>{
     res.send(bucketlist2)
 });
@@ -151,7 +155,7 @@ app.post('/api/v2/bucketlist', (req, res) =>{
     let myItems = [];
     for(let i=1; i<=bucklistItems.length; i++){
         let isdone = false
-        console.log(bucklistItems[i-1]);
+        // console.log(bucklistItems[i-1]);
 
         const {itemError} = validateBucketlist(bucklistItems[i-1]);
         if(itemError) return res.status(400).send(itemError.details[0].message);
@@ -186,36 +190,63 @@ app.post('/api/v2/bucketlist', (req, res) =>{
 });
 
 app.get('/api/v2/bucketlist/:id', (req, res) =>{
-    const list = bucketlist.find(b => b.id === parseInt(req.params.id));
+    const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
     if(!list) return res.status(404).send('The list with the given ID was not found.');
     res.send(list);
 });
 
 app.put('/api/v2/bucketlist/:id', (req, res) => {
     //Look up the bucketlist
-    const list = bucketlist.find(b => b.id === parseInt(req.params.id));
+    const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
     if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
 
     //Validate
-    const { error } = validateBucketlist(req.body);       //object destructuring
-
+    const { error } = validateBucketlist2(req.body);       //object destructuring
     //If invalid, return 400 - Bad Request
     if(error) return res.status(400).send(error.details[0].message);    // 400 Bad Request
     
+    bucklistItems = req.body.items;
+    const date = getDateTime();    
+
+    let myItems = [];
+    for(let i=1; i<=bucklistItems.length; i++){
+        let isdone = false
+        // console.log(bucklistItems[i-1]);
+
+        const {itemError} = validateBucketlist(bucklistItems[i-1]);
+        if(itemError) return res.status(400).send(itemError.details[0].message);
+
+        if(bucklistItems[i-1].done){
+            isdone = bucklistItems[i-1].done
+        }
+        
+        myItems.push(
+            {
+                id: i,
+                name: bucklistItems[i-1].name,
+                date_created: date,
+                date_modified: date,
+                done: isdone
+            }
+        )
+    }
+
     //Update bucketlist
     list.name = req.body.name;
+    list.date_modified = date,
+    list.items = myItems
     res.send(list);   //Return the updated bucketlist 
 });
 
 
 app.delete('/api/v2/bucketlist/:id', (req, res) => {
     //Look up the bucketlist
-    const list = bucketlist.find(b => b.id === parseInt(req.params.id));
+    const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
     if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
 
     //Delete
-    const index = bucketlist.indexOf(list);
-    bucketlist.splice(index, 1);
+    const index = bucketlist2.indexOf(list);
+    bucketlist2.splice(index, 1);
     
     res.send(list);   //Return the deleted bucketlist 
 });
