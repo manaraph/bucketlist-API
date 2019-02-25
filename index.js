@@ -48,38 +48,42 @@ app.post('/api/bucketlist', (req, res) =>{
     res.send(list);
 });
 
-// app.get('/bucketlist/:id', (req, res) =>{
-//     res.send(req.params.id)
-// });
-
 app.get('/api/bucketlist/:id', (req, res) =>{
     const list = bucketlist.find(b => b.id === parseInt(req.params.id));
-    if(!list) res.status(404).send('The list with the given ID was not found.');
+    if(!list) return res.status(404).send('The list with the given ID was not found.');
     res.send(list);
 });
-
 
 app.put('/api/bucketlist/:id', (req, res) => {
     //Look up the bucketlist
     const list = bucketlist.find(b => b.id === parseInt(req.params.id));
-    if(!list) res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
+    if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
 
     //Validate
     const { error } = validateBucketlist(req.body);       //object destructuring
 
     //If invalid, return 400 - Bad Request
-    if(error){
-        // 400 Bad Request
-        res.status(400).send(error.details[0].message);
-        return;
-    }
-
+    if(error) return res.status(400).send(error.details[0].message);    // 400 Bad Request
+    
     //Update bucketlist
     list.name = req.body.name;
     res.send(list);   //Return the updated bucketlist 
 });
 
 
+app.delete('/api/bucketlist/:id', (req, res) => {
+    //Look up the bucketlist
+    const list = bucketlist.find(b => b.id === parseInt(req.params.id));
+    if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
+
+    //Delete
+    const index = bucketlist.indexOf(list);
+    bucketlist.splice(index, 1);
+    
+    res.send(list);   //Return the deleted bucketlist 
+});
+
+//Some tests
 app.get('/api/bucketlist/:year/:month', (req, res) =>{
     res.send(req.params) //example of url => http://localhost:3000/api/bucketlist/2018/2
 });
@@ -87,6 +91,10 @@ app.get('/api/bucketlist/:year/:month', (req, res) =>{
 app.get('/api/posts/:year/:month', (req, res) =>{
     res.send(req.query)
 });
+
+// app.get('/bucketlist/:id', (req, res) =>{
+//     res.send(req.params.id)
+// });
 
 function validateBucketlist(list){
     //Validate
