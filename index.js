@@ -8,11 +8,12 @@ const bucketlist =[
     {id:4, name: "Start a company"},
 ]
 
+//Get Requests
 app.get('/', (req, res) =>{
     res.send("Hello world!!!");
 });
 
-app.get('/bucketlist', (req, res) =>{
+app.get('/api/bucketlist', (req, res) =>{
     res.send(bucketlist)
 });
 
@@ -20,17 +21,22 @@ app.get('/bucketlist', (req, res) =>{
 //     res.send(req.params.id)
 // });
 
-app.get('/bucketlist/:id', (req, res) =>{
+app.get('/api/bucketlist/:id', (req, res) =>{
     const list = bucketlist.find(b => b.id === parseInt(req.params.id));
     if(!list) res.status(404).send('The list with the given ID was not found.');
     res.send(list);
 });
 
-app.get('/bucketlist/:year/:month', (req, res) =>{
-    res.send(req.params) //example of url => http://localhost:3000/bucketlist/2018/2
+app.get('/api/bucketlist/:year/:month', (req, res) =>{
+    res.send(req.params) //example of url => http://localhost:3000/api/bucketlist/2018/2
 });
 
-app.get('/posts/:year/:month', (req, res) =>{
+app.get('/api/posts/:year/:month', (req, res) =>{
+    res.send(req.query)
+});
+
+//POST Requests
+app.post('/posts/:year/:month', (req, res) =>{
     res.send(req.query)
 });
 
