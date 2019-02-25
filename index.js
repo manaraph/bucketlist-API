@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+app.use(express.json());
+
 const bucketlist =[
     {id:1, name: "Get a degree"},
     {id:2, name: "Get a good job"},
@@ -17,11 +19,27 @@ app.get('/api/bucketlist', (req, res) =>{
     res.send(bucketlist)
 });
 
+app.post('/api/bucketlist', (req, res) =>{
+    const list = {
+        id: bucketlist.length + 1,
+        name: req.body.name
+    }
+
+    bucketlist.push(list);
+    res.send(list);
+});
+
 // app.get('/bucketlist/:id', (req, res) =>{
 //     res.send(req.params.id)
 // });
 
 app.get('/api/bucketlist/:id', (req, res) =>{
+    const list = bucketlist.find(b => b.id === parseInt(req.params.id));
+    if(!list) res.status(404).send('The list with the given ID was not found.');
+    res.send(list);
+});
+
+app.post('/api/bucketlist/:id', (req, res) =>{
     const list = bucketlist.find(b => b.id === parseInt(req.params.id));
     if(!list) res.status(404).send('The list with the given ID was not found.');
     res.send(list);
@@ -36,9 +54,9 @@ app.get('/api/posts/:year/:month', (req, res) =>{
 });
 
 //POST Requests
-app.post('/posts/:year/:month', (req, res) =>{
-    res.send(req.query)
-});
+// app.post('/posts/:year/:month', (req, res) =>{
+//     res.send(req.query)
+// });
 
 // PORT
 const port = process.env.PORT || 3000;
