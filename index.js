@@ -8,7 +8,6 @@ const bucketlist =[
     {id:1, name: "Get a degree"},
     {id:2, name: "Get a good job"},
     {id:3, name: "Improve my technical and managerial skills"},
-    {id:4, name: "Start a company"},
 ]
 
 //Get Requests
