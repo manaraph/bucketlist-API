@@ -26,6 +26,7 @@ app.post('/api/bucketlist', (req, res) =>{
     }
 
     bucketlist.push(list);
+    // res.send(req.body.name);
     res.send(list);
 });
 
