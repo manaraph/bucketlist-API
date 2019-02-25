@@ -20,6 +20,12 @@ app.get('/api/bucketlist', (req, res) =>{
 });
 
 app.post('/api/bucketlist', (req, res) =>{
+    if(!req.body.name || req.body.name.length < 3){
+        // 400 Bad Request
+        res.status(400).send('Name is requires and should be minimum of 3 characters');
+        return;
+    }
+
     const list = {
         id: bucketlist.length + 1,
         name: req.body.name
