@@ -189,6 +189,45 @@ app.post('/api/v2/bucketlist', (req, res) =>{
     res.send(list);
 });
 
+
+app.post('/api/v2/bucketlist/:id/items', (req, res) =>{
+    //Look up the bucketlist
+    const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
+    if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
+        
+    const date = getDateTime();        
+    const bucklistItems = req.body;
+    console.log(bucklistItems);
+
+    // const {error} = validateBucketlist2(req.body);
+    let myItems = [];
+    for(let i=1; i<=bucklistItems.length; i++){
+        let isdone = false
+        // console.log(bucklistItems[i-1]);
+
+        const {itemError} = validateBucketlist(bucklistItems[i-1]);
+        if(itemError) return res.status(400).send(itemError.details[0].message);
+
+        if(bucklistItems[i-1].done){
+            isdone = bucklistItems[i-1].done
+        }
+        
+        myItems.push(
+            {
+                id: bucklistItems.length + i,
+                name: bucklistItems[i-1].name,
+                date_created: date,
+                date_modified: date,
+                done: isdone
+            }
+        )
+    }
+
+    list.items = list.items.concat(myItems)
+
+    res.send(myItems);
+});
+
 app.get('/api/v2/bucketlist/:id', (req, res) =>{
     const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
     if(!list) return res.status(404).send('The list with the given ID was not found.');
