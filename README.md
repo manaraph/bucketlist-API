@@ -49,7 +49,7 @@ URL Endpoint	|               HTTP Request   | Resource Accessed | Access Type|
 /api/bucketlists/<bucketlist_id>/items/<item_id>|	DELETE	| Delete an item in a bucketlist |prvate
 /api/bucketlists/<bucketlist_id>/items/<item_id>|	PUT   	|update a bucketlist item details |private
 
-<!-- URL Endpoint	|               HTTP Request   | Resource Accessed |
+URL Endpoint	|               HTTP Request   | Resource Accessed |
 ----------------|-----------------|-------------|------------------
 /auth/login	  |     POST	| Logs a user in
 /auth/logout	  |     POST	| Logout
@@ -62,4 +62,4 @@ URL Endpoint	|               HTTP Request   | Resource Accessed | Access Type|
 /api/v2/bucketlists/<id>/items/     |     POST	| Create items in a bucketlist 
 /api/v2/bucketlists/<id>/items/<item_id>|	GET	| Get a single item in a bucket list
 /api/v2/bucketlists/<id>/items/<item_id>|	DELETE	| Delete an item in a bucketlist 
-/api/v2/bucketlists/<id>/items/<item_id>|	PUT   	| Update a bucketlist item details  -->
+/api/v2/bucketlists/<id>/items/<item_id>|	PUT   	| Update a bucketlist item details 
