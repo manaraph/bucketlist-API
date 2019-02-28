@@ -262,7 +262,7 @@ app.post('/api/v2/bucketlist/:id/items', (req, res) =>{
     const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
     if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
         
-    const id = req.params.id;
+    const id = req.params.id - 1;
     const date = getDateTime();        
     const bucklistItems = req.body;
 
@@ -279,7 +279,7 @@ app.post('/api/v2/bucketlist/:id/items', (req, res) =>{
         
         myItems.push(
             {
-                id: bucketlist2[id-1].items.length + i + 1,
+                id: bucketlist2[id].items.length + i + 1,
                 name: bucklistItems[i].name,
                 date_created: date,
                 date_modified: date,
@@ -289,9 +289,16 @@ app.post('/api/v2/bucketlist/:id/items', (req, res) =>{
     }
 
     list.items = list.items.concat(myItems)
-    bucketlist2[id-1].date_modified = date;
+    bucketlist2[id].date_modified = date;
 
     res.send(myItems);
+});
+
+app.get('/api/v2/bucketlist/:id/items/:itemID', (req, res) =>{
+    const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
+    if(!list) return res.status(404).send('The list with the given ID was not found.');
+    let itemID = req.params.itemID - 1;
+    res.send(list.items[itemID]);
 });
 
 //Some tests
