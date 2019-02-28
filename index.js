@@ -251,6 +251,12 @@ app.delete('/api/v2/bucketlist/:id', (req, res) => {
     res.send(list);   //Return the deleted bucketlist 
 });
 
+app.get('/api/v2/bucketlist/:id/items', (req, res) =>{
+    const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
+    if(!list) return res.status(404).send('The list with the given ID was not found.');
+    res.send(list.items);
+});
+
 app.post('/api/v2/bucketlist/:id/items', (req, res) =>{
     //Look up the bucketlist
     const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
@@ -259,18 +265,13 @@ app.post('/api/v2/bucketlist/:id/items', (req, res) =>{
     const id = req.params.id;
     const date = getDateTime();        
     const bucklistItems = req.body;
-    console.log(req.params.id);
 
-    // const {error} = validateBucketlist2(req.body);
     let myItems = [];
     for(let i=0; i<bucklistItems.length; i++){
         let isdone = false
-        // console.log(bucklistItems[i]);
 
         const {itemError} = validateBucketlist(bucklistItems[i]);
         if(itemError) return res.status(400).send(itemError.details[0].message);
-
-        console.log(i +" - "+bucklistItems);
         
         if(bucklistItems[i].done){
             isdone = bucklistItems[i].done
@@ -290,9 +291,6 @@ app.post('/api/v2/bucketlist/:id/items', (req, res) =>{
     list.items = list.items.concat(myItems)
     bucketlist2[id-1].date_modified = date;
 
-    // console.log(myItems);
-    // console.log(list.items);
-    
     res.send(myItems);
 });
 
