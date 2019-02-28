@@ -238,7 +238,6 @@ app.put('/api/v2/bucketlist/:id', (req, res) => {
     res.send(list);   //Return the updated bucketlist 
 });
 
-
 app.delete('/api/v2/bucketlist/:id', (req, res) => {
     //Look up the bucketlist
     const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
@@ -301,6 +300,41 @@ app.get('/api/v2/bucketlist/:id/items/:itemID', (req, res) =>{
     res.send(list.items[itemID]);
 });
 
+app.put('/api/v2/bucketlist/:id/items/:itemID', (req, res) => {
+    const itemID = req.params.itemID; 
+    //Look up the bucketlist
+    const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
+    if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
+    console.log(list.items[itemID]);
+
+     //Look up the bucketlist item
+     const item = list.items[itemID];
+     if(!item) return res.status(404).send('The item with the given ID was not found.');    //If not existing, return 404
+ 
+     console.log(list.items);
+     
+    //Validate
+    const { error } = validateBucketlistItem(req.body);       //object destructuring
+    //If invalid, return 400 - Bad Request
+    if(error) return res.status(400).send(error.details[0].message);    // 400 Bad Request
+    
+    const date = getDateTime();    
+
+    let isdone = false
+
+    if(req.body.done){
+        isdone = req.body.done
+    }
+
+
+    //Update bucketlist
+    list.date_modified = date,
+    item.date_modified = date,
+    item.name = req.body.name
+    item.done = isdone
+    res.send(item);   //Return the updated item 
+});
+
 //Some tests
 app.get('/api/bucketlist/:year/:month', (req, res) =>{
     res.send(req.params) //example of url => http://localhost:3000/api/bucketlist/2018/2
@@ -328,6 +362,16 @@ function validateBucketlist2(list){
     const schema = {
         name: Joi.string().min(3).required(),
         items: Joi.array().required(),
+        done: Joi.boolean()
+    }
+    return Joi.validate(list, schema);
+
+}
+
+function validateBucketlistItem(list){
+    //Validate
+    const schema = {
+        name: Joi.string().min(3).required(),
         done: Joi.boolean()
     }
     return Joi.validate(list, schema);
