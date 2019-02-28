@@ -261,7 +261,7 @@ app.post('/api/v2/bucketlist/:id/items', (req, res) =>{
     const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
     if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
         
-    const id = req.params.id - 1;
+    const id = req.params.id;
     const date = getDateTime();        
     const bucklistItems = req.body;
 
@@ -305,14 +305,11 @@ app.put('/api/v2/bucketlist/:id/items/:itemID', (req, res) => {
     //Look up the bucketlist
     const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
     if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
-    console.log(list.items[itemID]);
 
      //Look up the bucketlist item
      const item = list.items[itemID];
      if(!item) return res.status(404).send('The item with the given ID was not found.');    //If not existing, return 404
- 
-     console.log(list.items);
-     
+      
     //Validate
     const { error } = validateBucketlistItem(req.body);       //object destructuring
     //If invalid, return 400 - Bad Request
@@ -333,6 +330,23 @@ app.put('/api/v2/bucketlist/:id/items/:itemID', (req, res) => {
     item.name = req.body.name
     item.done = isdone
     res.send(item);   //Return the updated item 
+});
+
+app.delete('/api/v2/bucketlist/:id/items/:itemID', (req, res) => {
+    //Look up the bucketlist
+    const list = bucketlist2.find(b => b.id === parseInt(req.params.id));
+    if(!list) return res.status(404).send('The list with the given ID was not found.');    //If not existing, return 404
+
+    //Look up the bucketlist item
+    const itemID = req.params.itemID;
+    const item = list.items[itemID];
+    if(!item) return res.status(404).send('The item with the given ID was not found.');    //If not existing, return 404
+      
+    //Delete
+    const index = list.items.indexOf(item);
+    list.items.splice(index, 1);
+    
+    res.send(item);   //Return the deleted bucketlist 
 });
 
 //Some tests
