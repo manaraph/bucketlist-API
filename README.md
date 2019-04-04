@@ -35,7 +35,7 @@ You can use postman or even curl to reach out to the following api endpoints:
 
 URL Endpoint	|               HTTP Request   | Resource Accessed | Access Type|
 ----------------|-----------------|-------------|------------------
-/api/auth/register   |      POST	| Register a new user|publc
+/api/auth/register   |      POST	| Register a new user|public
 /api/auth/login	  |     POST	| Login and retrieve token|public
 /api/auth/logout	  |     POST	| Logout and thus deactivate token|public
 /api/auth/reset-password	  |     PUT	| Reset your password when logged in|private
